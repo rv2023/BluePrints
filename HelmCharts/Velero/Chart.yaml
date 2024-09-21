@@ -1,0 +1,11 @@
+apiVersion: v2
+name: velero
+description: k8s backup & restore
+type: application
+version: 0.1.0
+appVersion: 1.0.0
+dependency:
+  - name: velero
+    version: "7.1.4"
+    repository: https://vmware-tanzu.github.io/helm-charts/
+  
