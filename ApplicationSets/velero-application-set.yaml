@@ -24,7 +24,7 @@ spec:
           - clusters: {}
   template:
     metadata:
-      name: '{{.values.addonChart}}'
+      name: '{{.values.addonChart}}-{{.name}}'
     spec:
       project: '{{ .metadata.annotations.argocd_project_name }}'
       #project: multi-cluster-hub-spoke-project
