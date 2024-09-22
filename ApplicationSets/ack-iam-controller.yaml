@@ -18,9 +18,6 @@ spec:
                 namespace: ack-system
               selector:
                   matchExpressions:
-                    - key: in_cluster
-                      operator: In
-                      values: ["false"]
                     - key: addons/ack-iam-controller
                       operator: In
                       values: ["true"]
