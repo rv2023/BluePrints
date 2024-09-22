@@ -18,9 +18,6 @@ spec:
                 namespace: velero
               selector:
                   matchExpressions:
-                    - key: in_cluster
-                      operator: In
-                      values: ["false"]
                     - key: addons/velero
                       operator: In
                       values: ["true"]
