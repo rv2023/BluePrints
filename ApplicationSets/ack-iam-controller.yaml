@@ -1,77 +1,77 @@
-apiVersion: argoproj.io/v1alpha1
-kind: ApplicationSet
-metadata:
-  name: ack-iam-controller-application-set
-  namespace: argocd
-spec:
-  goTemplate: true
-  goTemplateOptions: ["missingkey=error"]
-  syncPolicy:
-    preserveResourcesOnDeletion: true
-  # generators:
-  #   - merge:
-  #       mergeKeys: [server]
-  #       generators:
-  #         - clusters:
-  #             values:
-  #               addonChart: ack-iam-controller
-  #               namespace: ack-system
-  #             selector:
-  #                 matchExpressions:
-  #                   - key: addons/ack-iam-controller
-  #                     operator: In
-  #                     values: ["true"]
-  #         - clusters: {}
-  generators:
-  - clusters:
-      selector:
-        matchLabels:
-          addons/ack-iam-controller: "true"
-  template:
-    metadata:
-      name: '{{.values.addonChart }}-{{ .name }}'
-    spec:
-      project: '{{ .metadata.annotations.argocd_project_name }}'
-      source:
-        helm:
-          releaseName: '{{.values.addonChart }}'
-          ignoreMissingValueFiles: true
-          valueFiles:
-              - values.yaml
-              - '../../environments/common/addons/{{.values.addonChart }}/values.yaml'
-              - '../../environments/{{.metadata.labels.environment}}/addons/{{.values.addonChart }}/values.yaml'
-              - '../../clusters/{{ .metadata.annotations.aws_cluster_name }}/addons/{{.values.addonChart }}/values.yaml'
-          values: |
-            iam-chart:
-              aws:
-                region: {{ .metadata.annotations.aws_region }}
-              deployment:
-                extraEnvVars:
-                  - name: AWS_STS_REGIONAL_ENDPOINTS
-                    value: regional
-              serviceAccount:
-                annotations:
-                    eks.amazonaws.com/role-arn: arn:aws:iam::{{ .metadata.annotations.aws_account_id }}:role/{{ .metadata.annotations.aws_cluster_name }}-irsa-ack-iam-controller-role
-        repoURL: '{{ .metadata.annotations.addons_repo_url }}'
-        path: 'charts/ack-iam-controller'
-        targetRevision: '{{ .metadata.annotations.addons_repo_revision }}'
-      destination:
-        namespace: '{{ .values.namespace }}'
-        name: '{{ .name }}'
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-          - ApplyOutOfSyncOnly=true
-          - ServerSideApply=true
-        retry:
-          limit: 5
-          backoff:
-            duration: 5s
-            maxDuration: 3m0s
-            factor: 2
-        managedNamespaceMetadata:
-          labels:
-            k8s.twr.io/imageswap: enabled
+# apiVersion: argoproj.io/v1alpha1
+# kind: ApplicationSet
+# metadata:
+#   name: ack-iam-controller-application-set
+#   namespace: argocd
+# spec:
+#   goTemplate: true
+#   goTemplateOptions: ["missingkey=error"]
+#   syncPolicy:
+#     preserveResourcesOnDeletion: true
+#   # generators:
+#   #   - merge:
+#   #       mergeKeys: [server]
+#   #       generators:
+#   #         - clusters:
+#   #             values:
+#   #               addonChart: ack-iam-controller
+#   #               namespace: ack-system
+#   #             selector:
+#   #                 matchExpressions:
+#   #                   - key: addons/ack-iam-controller
+#   #                     operator: In
+#   #                     values: ["true"]
+#   #         - clusters: {}
+#   generators:
+#   - clusters:
+#       selector:
+#         matchLabels:
+#           addons/ack-iam-controller: "true"
+#   template:
+#     metadata:
+#       name: '{{.values.addonChart }}-{{ .name }}'
+#     spec:
+#       project: '{{ .metadata.annotations.argocd_project_name }}'
+#       source:
+#         helm:
+#           releaseName: '{{.values.addonChart }}'
+#           ignoreMissingValueFiles: true
+#           valueFiles:
+#               - values.yaml
+#               - '../../environments/common/addons/{{.values.addonChart }}/values.yaml'
+#               - '../../environments/{{.metadata.labels.environment}}/addons/{{.values.addonChart }}/values.yaml'
+#               - '../../clusters/{{ .metadata.annotations.aws_cluster_name }}/addons/{{.values.addonChart }}/values.yaml'
+#           values: |
+#             iam-chart:
+#               aws:
+#                 region: {{ .metadata.annotations.aws_region }}
+#               deployment:
+#                 extraEnvVars:
+#                   - name: AWS_STS_REGIONAL_ENDPOINTS
+#                     value: regional
+#               serviceAccount:
+#                 annotations:
+#                     eks.amazonaws.com/role-arn: arn:aws:iam::{{ .metadata.annotations.aws_account_id }}:role/{{ .metadata.annotations.aws_cluster_name }}-irsa-ack-iam-controller-role
+#         repoURL: '{{ .metadata.annotations.addons_repo_url }}'
+#         path: 'charts/ack-iam-controller'
+#         targetRevision: '{{ .metadata.annotations.addons_repo_revision }}'
+#       destination:
+#         namespace: '{{ .values.namespace }}'
+#         name: '{{ .name }}'
+#       syncPolicy:
+#         automated:
+#           prune: true
+#           selfHeal: true
+#         syncOptions:
+#           - CreateNamespace=true
+#           - ApplyOutOfSyncOnly=true
+#           - ServerSideApply=true
+#         retry:
+#           limit: 5
+#           backoff:
+#             duration: 5s
+#             maxDuration: 3m0s
+#             factor: 2
+#         managedNamespaceMetadata:
+#           labels:
+#             k8s.twr.io/imageswap: enabled
