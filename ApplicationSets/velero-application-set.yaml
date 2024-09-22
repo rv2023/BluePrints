@@ -23,6 +23,7 @@ spec:
           ignoreMissingValueFiles: true
           ValueFiles:
             - values.yaml
+            - ../../Clusters/{{.metadata.annotations.env}}/addons/{{.values.addon}}/values.yaml
             - ../../Clusters/{{.metadata.annotations.env}}/{{.metadata.annotations.aws_cluster_name}}/addons/{{.values.addon}}/values.yaml
           repoURL: {{.metadata.annotations.addons_git_repo}}
         path: HelmCharts/{{.values.addon}}
