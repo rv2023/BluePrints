@@ -4,34 +4,47 @@ metadata:
   name: velero-application-set
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  syncPolicy:
+    preserveResourcesOnDeletion: true
   generators:
-    - clusters:
-        selector:
-          matchLabels:
-            addons/velero: "true"
+    - merge:
+        mergeKeys: [server]
+        generators:
+          - clusters:
+              values:
+                addonChart: velero
+                namespace: velero
+              selector:
+                  matchExpressions:
+                    - key: in_cluster
+                      operator: In
+                      values: ["false"]
+                    - key: addons/velero
+                      operator: In
+                      values: ["true"]
+          - clusters: {}
   template:
     metadata:
-      name: '{{.metadata.name}}-velero'
-      annotations:
-        env: '{{.metadata.annotations.env}}'
-        aws_cluster_name: '{{.metadata.annotations.aws_cluster_name}}'
-        addons_git_repo: '{{.metadata.annotations.addons_git_repo}}'
-        addons_git_repo_version: '{{.metadata.annotations.addons_git_repo_version}}'
+      name: '{{.values.addonChart }}-{{ .name }}'
     spec:
-      project: multi-cluster-project
+      project: '{{ .metadata.annotations.argocd_project_name }}'
       source:
-        repoURL: '{{.metadata.annotations.addons_git_repo}}'
-        targetRevision: '{{.metadata.annotations.addons_git_repo_version}}'
         helm:
-          releaseName: '{{.values.addon}}'
-          valueFiles:
-            - values.yaml
-            - '../../Clusters/{{.metadata.annotations.env}}/addons/{{.values.addon}}/values.yaml'
-            - '../../Clusters/{{.metadata.annotations.env}}/{{.metadata.annotations.aws_cluster_name}}/addons/{{.values.addon}}/values.yaml'
+          releaseName: '{{.values.addonChart }}'
           ignoreMissingValueFiles: true
+          valueFiles:
+              - values.yaml
+              - '../../environments/common/addons/{{.values.addonChart }}/values.yaml'
+              - '../../environments/{{.metadata.labels.environment}}/addons/{{.values.addonChart }}/values.yaml'
+              - '../../clusters/{{ .metadata.annotations.aws_cluster_name }}/addons/{{.values.addonChart }}/values.yaml'
+        repoURL: '{{ .metadata.annotations.addons_repo_url }}'
+        path: 'charts/ack-iam-controller'
+        targetRevision: '{{ .metadata.annotations.addons_repo_revision }}'
       destination:
-        server: '{{server}}'
-        namespace: '{{.values.namespace}}'
+        namespace: '{{ .values.namespace }}'
+        name: '{{ .name }}'
       syncPolicy:
         automated:
           prune: true
@@ -39,3 +52,13 @@ spec:
         syncOptions:
           - CreateNamespace=true
           - ApplyOutOfSyncOnly=true
+          - ServerSideApply=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            maxDuration: 3m0s
+            factor: 2
+        managedNamespaceMetadata:
+          labels:
+            k8s.twr.io/imageswap: enabled
