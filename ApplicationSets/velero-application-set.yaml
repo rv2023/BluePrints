@@ -36,11 +36,11 @@ spec:
           ignoreMissingValueFiles: true
           valueFiles:
               - values.yaml
-              - '../../environments/common/addons/{{.values.addonChart }}/values.yaml'
+              - '../../environments/common/addons/{{.values.addonChart}}/values.yaml'
               - '../../environments/{{.metadata.labels.environment}}/addons/{{.values.addonChart }}/values.yaml'
               - '../../clusters/{{ .metadata.annotations.aws_cluster_name }}/addons/{{.values.addonChart }}/values.yaml'
         repoURL: '{{ .metadata.annotations.addons_repo_url }}'
-        path: 'charts/ack-iam-controller'
+        path: 'HelmCharts/{{.values.addonChart}}'
         targetRevision: '{{ .metadata.annotations.addons_repo_revision }}'
       destination:
         namespace: '{{ .values.namespace }}'
