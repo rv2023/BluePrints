@@ -8,20 +8,25 @@ spec:
   goTemplateOptions: ["missingkey=error"]
   syncPolicy:
     preserveResourcesOnDeletion: true
+  # generators:
+  #   - merge:
+  #       mergeKeys: [server]
+  #       generators:
+  #         - clusters:
+  #             values:
+  #               addonChart: ack-iam-controller
+  #               namespace: ack-system
+  #             selector:
+  #                 matchExpressions:
+  #                   - key: addons/ack-iam-controller
+  #                     operator: In
+  #                     values: ["true"]
+  #         - clusters: {}
   generators:
-    - merge:
-        mergeKeys: [server]
-        generators:
-          - clusters:
-              values:
-                addonChart: ack-iam-controller
-                namespace: ack-system
-              selector:
-                  matchExpressions:
-                    - key: addons/ack-iam-controller
-                      operator: In
-                      values: ["true"]
-          - clusters: {}
+  - clusters:
+      selector:
+        matchLabels:
+          addons/ack-iam-controller: "true"
   template:
     metadata:
       name: '{{.values.addonChart }}-{{ .name }}'
