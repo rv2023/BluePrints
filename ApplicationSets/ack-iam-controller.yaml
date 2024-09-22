@@ -21,7 +21,7 @@ spec:
                     - key: in_cluster
                       operator: In
                       values: ["false"]
-                    - key: addon/ack-iam-controller
+                    - key: addons/ack-iam-controller
                       operator: In
                       values: ["true"]
           - clusters: {}
