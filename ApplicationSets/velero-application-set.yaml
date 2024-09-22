@@ -34,9 +34,9 @@ spec:
           ignoreMissingValueFiles: true
           valueFiles:
               - values.yaml
-              - '../../environments/common/addons/{{.values.addonChart}}/values.yaml'
+              - '../../environments/common/addons{{.values.addonChart}}/values.yaml'
               - '../../environments/{{.metadata.annotations.env}}/addons/{{.values.addonChart }}/values.yaml'
-              - '../../clusters/{{ .metadata.annotations.aws_cluster_name }}/addons/{{.values.addonChart }}/values.yaml'
+              - '../../clusters/{{.metadata.annotations.env}}/{{ .metadata.annotations.aws_cluster_name }}/addons/{{.values.addonChart }}/values.yaml'
         repoURL: '{{ .metadata.annotations.addons_git_repo_url }}'
         path: 'HelmCharts/{{.values.addonChart}}'
         targetRevision: '{{ .metadata.annotations.addons_git_repo_version }}'
