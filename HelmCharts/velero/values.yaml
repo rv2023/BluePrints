@@ -1,2 +1,25 @@
-# ---
-# velero:
+---
+velero:
+  configuration:
+    backupStorageLocation:
+      - bucket: doc-example-bucket-gavagv
+        provider: aws
+        name: aws-backup
+    volumeSnapshotLocation:
+      - config:
+          region: us-east-1
+        provider: aws
+  initContainers:
+    - name: velero-plugin-for-aws
+      image: velero/velero-plugin-for-aws:v1.7.1
+      volumeMounts:
+        - mountPath: /target
+          name: plugins
+  credentials:
+    useSecret: false
+  serviceAccount:
+    name: velero-sa
+    server:
+      annotations:
+        eks.amazonaws.com/role-arn: "arn:aws:iam::073053153137:role/sandbox-control-plane-cluster-01-velero-irsa-role"
+        ##
