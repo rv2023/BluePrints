@@ -8,24 +8,25 @@ spec:
   # goTemplateOptions: ["missingkey=error"]
   # syncPolicy:
   #   preserveResourcesOnDeletion: true
-  # generators:
-  #   - merge:
-  #       mergeKeys: [server]
-  #       generators:
-  #         - clusters:
-  #             values:
-  #               addonChart: velero
-  #               namespace: velero
-  #             selector:
-  #                 matchExpressions:
-  #                   - key: addons/velero
-  #                     operator: In
-  #                     values: ["true"]
   generators:
-  - clusters:
-      selector:
-        matchLabels:
-          addons/velero: "true"
+    - merge:
+        mergeKeys: [server]
+        generators:
+          - clusters:
+              values:
+                addonChart: velero
+                namespace: velero
+              selector:
+                  matchExpressions:
+                    - key: addons/velero
+                      operator: In
+                      values: ["true"]
+          - clusters: {}      
+  # generators:
+  # - clusters:
+  #     selector:
+  #       matchLabels:
+  #         addons/velero: "true"
   template:
     metadata:
       name: '{{.values.addonChart }}-{{ .name }}'
