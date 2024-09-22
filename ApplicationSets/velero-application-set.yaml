@@ -4,10 +4,10 @@ metadata:
   name: velero-application-set
   namespace: argocd
 spec:
-  # goTemplate: true
-  # goTemplateOptions: ["missingkey=error"]
-  # syncPolicy:
-  #   preserveResourcesOnDeletion: true
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  syncPolicy:
+    preserveResourcesOnDeletion: true
   generators:
     - merge:
         mergeKeys: [server]
