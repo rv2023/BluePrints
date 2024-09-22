@@ -6,8 +6,8 @@ metadata:
 spec:
   # goTemplate: true
   # goTemplateOptions: ["missingkey=error"]
-  syncPolicy:
-    preserveResourcesOnDeletion: true
+  # syncPolicy:
+  #   preserveResourcesOnDeletion: true
   # generators:
   #   - merge:
   #       mergeKeys: [server]
@@ -60,6 +60,6 @@ spec:
             duration: 5s
             maxDuration: 3m0s
             factor: 2
-        managedNamespaceMetadata:
-          labels:
-            k8s.twr.io/imageswap: enabled
+        # managedNamespaceMetadata:
+        #   labels:
+        #     k8s.twr.io/imageswap: enabled
