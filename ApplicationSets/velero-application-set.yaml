@@ -44,7 +44,7 @@ spec:
               - '../../clusters/{{ .metadata.annotations.aws_cluster_name }}/addons/{{.values.addonChart }}/values.yaml'
         repoURL: '{{ .metadata.annotations.addons_git_repo_url }}'
         path: 'HelmCharts/{{.values.addonChart}}'
-        targetRevision: '{{ .metadata.annotations.addons_repo_revision }}'
+        targetRevision: '{{ .metadata.annotations.addons_git_repo_version }}'
       destination:
         namespace: '{{ .values.namespace }}'
         name: '{{name}}'
