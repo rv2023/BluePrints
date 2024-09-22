@@ -31,7 +31,7 @@ spec:
       name: '{{.values.addonChart }}-{{ .name }}'
     spec:
       #project: '{{ .metadata.annotations.argocd_project_name }}'
-      project: multi-cluster-project
+      project: multi-cluster-hub-spoke-project
       source:
         helm:
           releaseName: '{{.values.addonChart }}'
