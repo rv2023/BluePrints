@@ -5,29 +5,30 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - clusters:
-      values:
-        addon: velero
-        namespace: velero
-      selector:
-        matchLabels:
-          addons/velero: "true"
+    - clusters:
+        selector:
+          matchLabels:
+            addons/velero: "true"
   template:
     metadata:
-      name: 'velero-application'
+      name: '{{.metadata.name}}-velero'
+      annotations:
+        env: '{{.metadata.annotations.env}}'
+        aws_cluster_name: '{{.metadata.annotations.aws_cluster_name}}'
+        addons_git_repo: '{{.metadata.annotations.addons_git_repo}}'
+        addons_git_repo_version: '{{.metadata.annotations.addons_git_repo_version}}'
     spec:
       project: multi-cluster-project
       source:
+        repoURL: '{{.metadata.annotations.addons_git_repo}}'
+        targetRevision: '{{.metadata.annotations.addons_git_repo_version}}'
         helm:
           releaseName: '{{.values.addon}}'
-          ignoreMissingValueFiles: true
-          ValueFiles:
+          valueFiles:
             - values.yaml
-            - ../../Clusters/{{.metadata.annotations.env}}/addons/{{.values.addon}}/values.yaml
-            - ../../Clusters/{{.metadata.annotations.env}}/{{.metadata.annotations.aws_cluster_name}}/addons/{{.values.addon}}/values.yaml
-          repoURL: {{.metadata.annotations.addons_git_repo}}
-        path: HelmCharts/{{.values.addon}}
-        targetRevision: '{{.metadata.annotations.addons_git_repo_version}}'
+            - '../../Clusters/{{.metadata.annotations.env}}/addons/{{.values.addon}}/values.yaml'
+            - '../../Clusters/{{.metadata.annotations.env}}/{{.metadata.annotations.aws_cluster_name}}/addons/{{.values.addon}}/values.yaml'
+          ignoreMissingValueFiles: true
       destination:
         server: '{{server}}'
         namespace: '{{.values.namespace}}'
