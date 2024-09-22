@@ -46,7 +46,7 @@ spec:
         targetRevision: '{{ .metadata.annotations.addons_repo_revision }}'
       destination:
         namespace: '{{ .values.namespace }}'
-        name: '{{ .name }}'
+        name: '{{name}}'
       syncPolicy:
         automated:
           prune: true
