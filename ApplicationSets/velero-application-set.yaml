@@ -29,7 +29,7 @@ spec:
   #         addons/velero: "true"
   template:
     metadata:
-      name: '{{.values.addonChart }}-{{ .name }}'
+      name: '{{.values.addonChart}}'
     spec:
       #project: '{{ .metadata.annotations.argocd_project_name }}'
       project: multi-cluster-hub-spoke-project
@@ -40,7 +40,7 @@ spec:
           valueFiles:
               - values.yaml
               - '../../environments/common/addons/{{.values.addonChart}}/values.yaml'
-              - '../../environments/{{.metadata.labels.environment}}/addons/{{.values.addonChart }}/values.yaml'
+              - '../../environments/{{.metadata.annotations.env}}/addons/{{.values.addonChart }}/values.yaml'
               - '../../clusters/{{ .metadata.annotations.aws_cluster_name }}/addons/{{.values.addonChart }}/values.yaml'
         repoURL: '{{ .metadata.annotations.addons_repo_url }}'
         path: 'HelmCharts/{{.values.addonChart}}'
