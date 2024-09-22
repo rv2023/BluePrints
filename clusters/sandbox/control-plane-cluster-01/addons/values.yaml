@@ -4,6 +4,7 @@ velero:
     backupStorageLocation:
       - bucket: doc-example-bucket-gavagv
         provider: aws
+        name: aws-backup
     volumeSnapshotLocation:
       - config:
           region: us-east-1
