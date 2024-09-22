@@ -21,12 +21,7 @@ spec:
                     - key: addons/velero
                       operator: In
                       values: ["true"]
-          - clusters: {}      
-  # generators:
-  # - clusters:
-  #     selector:
-  #       matchLabels:
-  #         addons/velero: "true"
+          #- clusters: {}
   template:
     metadata:
       name: '{{.values.addonChart}}'
